@@ -1,4 +1,4 @@
-import 'package:cryptotracker/screens/tracker_screen.dart';
+import 'package:cryptotracker/screens/tracker.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,7 +10,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Crypto Tracker',
-      home: Tracker(),
+      home: TrackerScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
