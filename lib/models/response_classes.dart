@@ -1,51 +1,61 @@
 class BPI {
-  String _code;
+  Country _country;
   double _rate;
-  String _description;
 
-  BPI.fromJson(Map<String, dynamic> json) {
-    _code = json['code'];
-    _rate = json['rate_float'];
-    _description = json['description'];
-  }
-
-  String get code => _code;
+  BPI.fromJson(Map<String, dynamic> json)
+      : _country = Country(json['code'], json['description']),
+        _rate = json['rate_float'];
 
   double get rate => _rate;
 
-  String get description => _description;
+  Country get country => _country;
 }
 
 class CurrentPriceResponse {
   DateTime _time;
-  Map<String, BPI> _bpi;
+  BPI _bpi;
 
   CurrentPriceResponse.fromJson(Map<String, dynamic> json) {
     _time = DateTime.parse(json['time']['updatedISO']);
-    json['bpi'].forEach((k, v) => _bpi[k] = BPI.fromJson(v));
+    if (json['bpi'].length > 0) {
+      json['bpi'].remove('USD');
+    }
+    _bpi = BPI.fromJson(json['bpi'][json['bpi'].keys.first]);
   }
 
   DateTime get time => _time;
 
-  Map<String, BPI> get bpi => _bpi;
+  BPI get bpi => _bpi;
 }
 
 class Country {
   String _currency;
-  String _country;
+  String _countryName;
 
-  Country.fromJson(Map<String, dynamic> json) {
-    _country = json['country'];
-    _currency = json['currency'];
-  }
+  Country.fromString(String s)
+      : _countryName = s.split('-')[0].trim(),
+        _currency = s.split('-')[1].trim();
+
+  Country(String currency, String country)
+      : _countryName = country,
+        _currency = currency;
+
+  Country.fromJson(Map<String, dynamic> json)
+      : _countryName = json['country'],
+        _currency = json['currency'];
 
   String get currency => _currency;
 
-  String get country => _country;
+  String get countryName => _countryName;
+
+  @override
+  String toString() {
+    return '$_countryName - $_currency';
+  }
 }
 
 class SupportCountriesResponse {
-  List<Country> _supportedCountries;
+  List<Country> _supportedCountries = [];
 
   List<Country> get countries => _supportedCountries;
 
