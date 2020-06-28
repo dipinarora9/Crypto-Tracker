@@ -27,6 +27,7 @@ class Tracker with ChangeNotifier {
     _loading = true;
     notifyListeners();
     _getPrefs().then((_) {
+      _currentPrices.clear();
       fetchAll();
       startTimer();
     });
@@ -41,9 +42,12 @@ class Tracker with ChangeNotifier {
   startTimer() {
     if (_countries.length > 0)
       _updateTimer = Timer.periodic(Duration(minutes: _updateInterval), (_) {
-        debugPrint('updating');
         fetchAll();
       });
+    else {
+      _loading = false;
+      notifyListeners();
+    }
   }
 
   cancelTimer() {
@@ -59,7 +63,7 @@ class Tracker with ChangeNotifier {
 
   removeCountry(Country country) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    _countries.remove(country);
+    _countries.removeWhere((element) => element.currency == country.currency);
     _currentPrices.remove(country.currency);
     pref.setStringList(
         'countries', _countries.map((e) => e.toString()).toList());

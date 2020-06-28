@@ -42,7 +42,6 @@ class AddCurrency with ChangeNotifier {
   }
 
   fetchSupportedCountries() async {
-    debugPrint('called');
     _loading = true;
     notifyListeners();
     http.Response res = await _httpClient.get(BASEURL);
